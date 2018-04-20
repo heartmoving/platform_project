@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.platform.base.dao.idbuilder.IIdBuilderMapper">
+	<resultMap id="result_IdBuilderMap" type="org.platform.base.domain.IdBuilder">
+		 <result column="id_type" property="idType"/>
+		 <result column="id_max_value" property="idMaxValue"/>
+		 <result column="remark" property="remark"/>
+		 <result column="version_num" property="versionNum"/>
+		 <result column="gmt_modify" property="gmtModify"/>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+	id_type,id_max_value,remark,version_num,gmt_modify
+	</sql>
+	
+	<!-- 批量新增  -->
+	<select  id="batchInsert" parameterType="java.util.List">
+		<![CDATA[
+		INSERT INTO id_builder(id_type,id_max_value,remark,version_num,gmt_modify) 
+		VALUES
+		]]>
+		<foreach collection="list" item="item"   separator=",">
+		(#{item.idType},#{item.idMaxValue},#{item.remark},#{item.versionNum},#{item.gmtModify})
+		</foreach>
+    </select >
+    
+    <!-- 单条新增  -->
+	<insert id="save" parameterType="org.platform.base.domain.IdBuilder">
+		<![CDATA[
+		INSERT INTO id_builder(id_type,id_max_value,remark,version_num,gmt_modify) 
+		VALUES 
+		(#{idType},#{idMaxValue},#{remark},#{versionNum},#{gmtModify})
+		]]>
+    </insert>
+    
+     <!-- 根据id查询 -->
+	<select id="getById" parameterType="long" resultMap="result_IdBuilderMap">
+		select <include refid="Base_Column_List"/> from id_builder where idType=#{idType}
+	</select>
+	
+	<!-- 分页查询列表 -->
+	<select id="getForList"  resultMap="result_IdBuilderMap" parameterType="org.platform.base.domain.IdBuilder">
+    	select <include refid="Base_Column_List"/> from id_builder
+    	order by id_type desc limit #{currentPage},#{pageSize}
+    </select>
+    <select id="getCountForList" parameterType="org.platform.base.domain.IdBuilder" resultType="int">
+   		 select count(1) from id_builder
+    </select>
+    <!-- 删除单条记录 -->
+    <delete id="deleteById" parameterType="long">
+	<![CDATA[
+		delete from id_builder where id_type=#{idType}
+	]]>	
+	</delete>
+	<!-- 删除多条记录 -->
+	<delete id="deleteByIds" parameterType="java.util.List">
+		delete from id_builder where idType in
+		<foreach collection="list" open="(" close=")" separator="," item="id">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!-- 根据id修改记录 -->
+	<update id="updateById" parameterType="org.platform.base.domain.IdBuilder">
+		update id_builder
+		<trim prefix="set" prefixOverrides=",">
+			<if test="idType != null and idType != ''">
+			,id_type = #{idType}
+			</if>
+			<if test="idMaxValue != null">
+			,id_max_value = #{idMaxValue}
+			</if>
+			<if test="remark != null and remark != ''">
+			,remark = #{remark}
+			</if>
+			<if test="versionNum != null">
+			,version_num = #{versionNum}
+			</if>
+			<if test="gmtModify != null and gmtModify != ''">
+			,gmt_modify = #{gmtModify}
+			</if>
+		</trim>
+		where id_type=#{idType}
+	</update>
+	
+	<!-- 根据条件查询 -->
+	<select id="findByCondition" resultMap="result_IdBuilderMap" parameterType="java.util.Map">
+		select <include refid="Base_Column_List"/> from id_builder
+		<where>
+			<if test="idType != null and idType != '' ">
+		      and id_type=#{idType}
+	        </if>
+			<if test="idMaxValue != null and idMaxValue != '' ">
+		      and id_max_value=#{idMaxValue}
+	        </if>
+			<if test="remark != null and remark != '' ">
+		      and remark=#{remark}
+	        </if>
+			<if test="versionNum != null and versionNum != '' ">
+		      and version_num=#{versionNum}
+	        </if>
+			<if test="gmtModify != null and gmtModify != '' ">
+		      and gmt_modify=#{gmtModify}
+	        </if>
+		</where>
+	</select>
+	
+	<select id="qryIdBuilder" parameterType="string" resultMap="result_IdBuilderMap">
+		select <include refid="Base_Column_List"/>
+		from id_builder
+		where id_type=#{idType}
+	</select>
+	
+	<update id="updateByBuilder" parameterType="java.util.Map">
+		update id_builder
+		set id_max_value = #{idMaxValue},version_num=version_num+1
+		where id_type=#{idType}  and version_num=#{versionNum}
+	</update>
+	
+	<select id="qryBuilderTableMaxId" parameterType="java.util.Map" resultType="long">
+		${sql}
+	</select>
+	
+</mapper>

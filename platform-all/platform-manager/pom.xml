@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>indi.zpk8</groupId>
+    <artifactId>platform-all</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>platform-manager</artifactId>
+  <packaging>pom</packaging>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <platform.version>0.0.1-SNAPSHOT</platform.version>
+    <package.environment>0.0.1-SNAPSHOT</package.environment>
+    <netflix-version>1.3.1.RELEASE</netflix-version>
+  </properties>
+  <profiles>
+		<profile>
+			<id>develop</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<profile.datasource.driverClassName>com.mysql.jdbc.Driver</profile.datasource.driverClassName>
+				<profile.datasource.url>jdbc:mysql://ceshi-219.chinacloudapp.cn:3306/kalaokdbtest?characterEncoding=utf-8</profile.datasource.url>
+				<profile.datasource.username>ceshi</profile.datasource.username>
+				<profile.datasource.password>abc123!@#</profile.datasource.password>
+				<profile.datasource.connectionTestQuery>SELECT 1</profile.datasource.connectionTestQuery>
+				<profile.datasource.connectionTimeout>30000</profile.datasource.connectionTimeout>
+				<profile.datasource.idleTimeout>600000</profile.datasource.idleTimeout>
+				<profile.datasource.maxLifetime>1800000</profile.datasource.maxLifetime>
+				<profile.datasource.maximumPoolSize>10</profile.datasource.maximumPoolSize>
+				<profile.datasource.minimumIdle>1</profile.datasource.minimumIdle>
+				<!-- 启动端口号 -->
+				<profile.location.port>80</profile.location.port>
+				<!-- 注册服务器，服务名称 -->
+				<spring.application.name>manager</spring.application.name>
+				<!-- 注册服务器连接地址,多个逗号隔开 -->
+				<eureka.client.serviceUrl.defaultZone>http://127.0.0.1:8761/eureka/</eureka.client.serviceUrl.defaultZone>
+				<!-- redis 服务器地址 -->
+				<session.redis.host>ceshi-219.chinacloudapp.cn</session.redis.host>
+				<!-- redis 密码 -->
+				<session.redis.password></session.redis.password>
+				<!--redis 端口 -->
+				<session.redis.port>6379</session.redis.port>
+				<!-- 最大连接数 -->
+				<session.redis.maxTotal>10</session.redis.maxTotal>
+				<session.redis.maxIdle>5</session.redis.maxIdle>
+				<session.redis.minIdle>1</session.redis.minIdle>
+				<!-- 超时 -->
+				<session.redis.timeout>3000</session.redis.timeout>
+				<!-- session 配置 -->
+				<session.cookieName>ZDY_SESSION_ID</session.cookieName>
+				<session.domainName>mm.com</session.domainName>
+				<session.cookiePath>/</session.cookiePath>
+			</properties>
+		</profile>
+		<profile>
+			<id>online</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<profile.datasource.driverClassName>com.mysql.jdbc.Driver</profile.datasource.driverClassName>
+				<profile.datasource.url>jdbc:mysql://ceshi-219.chinacloudapp.cn:3306/kalaokdbtest?characterEncoding=utf-8</profile.datasource.url>
+				<profile.datasource.username>ceshi</profile.datasource.username>
+				<profile.datasource.password>abc123!@#</profile.datasource.password>
+				<profile.datasource.connectionTestQuery>SELECT 1</profile.datasource.connectionTestQuery>
+				<profile.datasource.connectionTimeout>30000</profile.datasource.connectionTimeout>
+				<profile.datasource.idleTimeout>600000</profile.datasource.idleTimeout>
+				<profile.datasource.maxLifetime>1800000</profile.datasource.maxLifetime>
+				<profile.datasource.maximumPoolSize>10</profile.datasource.maximumPoolSize>
+				<profile.datasource.minimumIdle>1</profile.datasource.minimumIdle>
+				<profile.location.port>8085</profile.location.port>
+				<spring.application.name>manager</spring.application.name>
+				<eureka.client.serviceUrl.defaultZone>http://127.0.0.1:8761/eureka/</eureka.client.serviceUrl.defaultZone>
+			</properties>
+		</profile>
+	</profiles>
+	<dependencies>
+ 		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-web</artifactId>
+	         <exclusions>
+                <exclusion>
+                    <artifactId>log4j-over-slf4j</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+	    </dependency>
+	    <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+	 </dependencies>
+  <modules>
+    <module>platform-manager-service</module>
+    <module>platform-manager-web</module>
+  </modules>
+   <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-netflix</artifactId>
+				<version>${netflix-version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+</project>
